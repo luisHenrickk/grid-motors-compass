@@ -3,6 +3,7 @@ import carRepository from '../repositories/carRepository';
 import { CarDTO } from '../schemas/dto/carDTO';
 import { ICar } from '../schemas/interfaces/ICar';
 import { ObjectId } from 'mongodb';
+import { NotFoundError } from '../utils/api-errors';
 
 class CarService {
   public async findAll(): Promise<ICar[]> {
@@ -10,7 +11,13 @@ class CarService {
   }
 
   public async findById(id: string): Promise<ICar | null> {
-    return carRepository.findById(id);
+    const car = await carRepository.findById(id);
+
+    if (!car) {
+      throw new NotFoundError('Car not found');
+    }
+
+    return car;
   }
 
   public async create(carDto: CarDTO): Promise<ICar> {
@@ -18,11 +25,21 @@ class CarService {
   }
 
   public async delete(id: string): Promise<any> {
-    return carRepository.delete(id);
+    const doc = await carRepository.delete(id);
+
+    if (!doc) {
+      throw new NotFoundError('Car not found');
+    }
   }
 
   public async update(id: string, carDto: CarDTO): Promise<ICar | null> {
-    return carRepository.update(id, carDto);
+    const updatedCar = await carRepository.update(id, carDto);
+
+    if (!updatedCar) {
+      throw new NotFoundError('Car not found');
+    }
+
+    return updatedCar;
   }
 
   public async updateAcessories(
@@ -33,7 +50,7 @@ class CarService {
     const car = await carRepository.findById(carId);
 
     if (!car) {
-      throw new Error('Car not found');
+      throw new NotFoundError('Car not found');
     }
 
     const accessoryIndex = car.accessories.findIndex((a) => a._id.toString() === accessoryId);
@@ -46,7 +63,7 @@ class CarService {
         car.accessories[accessoryIndex].description = updateAccessoryDto.description;
       }
     } else {
-      throw new Error('Accesory not found');
+      throw new NotFoundError('Accessory not found');
     }
 
     return carRepository.update(carId, car);
