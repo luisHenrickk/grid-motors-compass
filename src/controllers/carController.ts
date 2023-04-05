@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import CarService from '../services/carService';
 import { CarDTO } from '../schemas/dto/carDTO';
+import { UpdateAccessoryDTO } from '../schemas/dto/updateAccessoryDTO';
 
 class CarController {
   public async findAll(req: Request, res: Response): Promise<Response> {
@@ -87,6 +88,19 @@ class CarController {
       return res.status(200).json({ updatedCar });
     } catch (error) {
       return res.status(500).json({ error: 'Internal server error' });
+    }
+  }
+
+  public async updateAccessory(req: Request, res: Response): Promise<Response> {
+    try {
+      const { carId, accessoryId } = req.params;
+      const updateAccesoryDto: UpdateAccessoryDTO = req.body;
+
+      const updatedCar = await CarService.updateAcessories(carId, accessoryId, updateAccesoryDto);
+
+      return res.status(200).json(updatedCar);
+    } catch (error: any) {
+      return res.status(500).json({ error: error.message });
     }
   }
 }

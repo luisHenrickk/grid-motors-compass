@@ -9,4 +9,4 @@ carRouter.get('/:id', CarController.findById);
 carRouter.post('/', carController.create);
 carRouter.delete('/:id', carController.delete);
 carRouter.put('/:id', carController.update);
-carRouter.patch('/:id/acessories/:id');
+carRouter.patch('/:carId/accessories/:accessoryId', carController.updateAccessory);
