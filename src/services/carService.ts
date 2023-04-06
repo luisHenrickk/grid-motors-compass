@@ -6,8 +6,17 @@ import { ObjectId } from 'mongodb';
 import { NotFoundError } from '../utils/api-errors';
 
 class CarService {
-  public async findAll(): Promise<ICar[]> {
-    return carRepository.findAll();
+  public async findAll(query: any): Promise<ICar[]> {
+    const { page = 1, limit = 100 } = query;
+    const queryObj = { ...query };
+
+    const excludedFields = ['select', 'sort', 'page', 'limit', 'fields'];
+    excludedFields.forEach((el) => delete queryObj[el]);
+
+    let queryStr = JSON.stringify(queryObj);
+    queryStr = queryStr.replace(/\b(gte|gt|lte|lt)\b/g, (match) => `$${match}`);
+
+    return carRepository.findAll(queryStr, page, limit);
   }
 
   public async findById(id: string): Promise<ICar | null> {

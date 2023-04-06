@@ -6,7 +6,7 @@ import { UpdateAccessoryDTO } from '../schemas/dto/updateAccessoryDTO';
 class CarController {
   public async findAll(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
-      const cars = await CarService.findAll();
+      const cars = await CarService.findAll(req.query);
 
       res.status(200).json({
         status: 'success',
