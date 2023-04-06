@@ -1,18 +1,17 @@
 import { Request, Response, NextFunction } from 'express';
-import CarService from '../services/carService';
-import { CarDTO } from '../schemas/car/dto/carDTO';
-import { UpdateAccessoryDTO } from '../schemas/car/dto/updateAccessoryDTO';
+import UserService from '../services/userService';
+import { UserDTO } from '../schemas/user/dto/userDTO';
 
-class CarController {
+class UserController {
   public async findAll(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
-      const cars = await CarService.findAll(req.query);
+      const users = await UserService.findAll();
 
       res.status(200).json({
         status: 'success',
-        results: cars.length,
+        results: users.length,
         data: {
-          data: cars,
+          data: users,
         },
       });
     } catch (error) {
@@ -23,12 +22,12 @@ class CarController {
   public async findById(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
       const { id } = req.params;
-      const car = await CarService.findById(id);
+      const user = await UserService.findById(id);
 
       res.status(200).json({
         status: 'success',
         data: {
-          data: car,
+          data: user,
         },
       });
     } catch (error) {
@@ -38,13 +37,13 @@ class CarController {
 
   public async create(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
-      const car: CarDTO = req.body;
-      const createdCar = await CarService.create(car);
+      const user: UserDTO = req.body;
+      const createdUser = await UserService.create(user);
 
       res.status(201).json({
         status: 'success',
         data: {
-          data: createdCar,
+          data: createdUser,
         },
       });
     } catch (error) {
@@ -55,7 +54,7 @@ class CarController {
   public async delete(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
       const { id } = req.params;
-      await CarService.delete(id);
+      await UserService.delete(id);
 
       res.status(204).json({
         status: 'success',
@@ -69,28 +68,15 @@ class CarController {
   public async update(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
       const { id } = req.params;
-      const car: CarDTO = req.body;
+      const user: UserDTO = req.body;
 
-      const updatedCar = await CarService.update(id, car);
+      const updatedUser = await UserService.update(id, user);
 
-      res.status(200).json({ updatedCar });
-    } catch (error) {
-      next(error);
-    }
-  }
-
-  public async updateAccessory(req: Request, res: Response, next: NextFunction): Promise<void> {
-    try {
-      const { carId, accessoryId } = req.params;
-      const updateAccesoryDto: UpdateAccessoryDTO = req.body;
-
-      const updatedCar = await CarService.updateAcessories(carId, accessoryId, updateAccesoryDto);
-
-      res.status(200).json(updatedCar);
+      res.status(200).json({ updatedUser });
     } catch (error) {
       next(error);
     }
   }
 }
 
-export default new CarController();
+export default new UserController();

@@ -1,7 +1,7 @@
-import { UpdateAccessoryDTO } from './../schemas/dto/updateAccessoryDTO';
+import { UpdateAccessoryDTO } from '../schemas/car/dto/updateAccessoryDTO';
 import carRepository from '../repositories/carRepository';
-import { CarDTO } from '../schemas/dto/carDTO';
-import { ICar } from '../schemas/interfaces/ICar';
+import { CarDTO } from '../schemas/car/dto/carDTO';
+import { ICar } from '../schemas/car/ICar';
 import { ObjectId } from 'mongodb';
 import { NotFoundError } from '../utils/api-errors';
 

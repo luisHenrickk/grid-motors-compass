@@ -1,6 +1,6 @@
-import { CarDTO } from '../schemas/dto/carDTO';
-import { ICar } from '../schemas/interfaces/ICar';
-import Car from '../schemas/carSchema';
+import { CarDTO } from '../schemas/car/dto/carDTO';
+import { ICar } from '../schemas/car/ICar';
+import Car from '../schemas/car/carSchema';
 
 class CarRepository {
   public async findAll(queryStr: string, page: number, limit: number): Promise<ICar[]> {
