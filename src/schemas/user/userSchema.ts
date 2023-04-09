@@ -1,5 +1,6 @@
 import mongoose, { Schema } from 'mongoose';
 import { IUser } from './IUser';
+import bcrypt from 'bcryptjs';
 
 const UserSchema: Schema = new Schema<IUser>({
   name: {
@@ -19,10 +20,13 @@ const UserSchema: Schema = new Schema<IUser>({
     type: String,
     required: [true, 'email is required'],
     unique: true,
+    lowercase: true,
   },
   password: {
     type: String,
     required: [true, 'password is required'],
+    minLenght: 6,
+    select: false,
   },
   cep: {
     type: String,
@@ -59,5 +63,17 @@ const UserSchema: Schema = new Schema<IUser>({
     default: '',
   },
 });
+
+UserSchema.pre<IUser>('save', async function (next) {
+  if (!this.isModified('password')) return next();
+
+  this.password = await bcrypt.hash(this.password, 12);
+
+  next();
+});
+
+UserSchema.methods.isCorrectPassword = async function (candidatePassword: string, userPassword: string) {
+  return await bcrypt.compare(candidatePassword, userPassword);
+};
 
 export default mongoose.model<IUser>('User', UserSchema);

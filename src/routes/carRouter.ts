@@ -2,12 +2,13 @@ import { Router } from 'express';
 import CarController from '../controllers/carController';
 import carController from '../controllers/carController';
 import { createCarValidationMiddleware } from '../middlewares/carValidationMiddleware';
+import authController from '../controllers/authController';
 
 export const carRouter = Router();
 
 carRouter.get('/', CarController.findAll);
 carRouter.get('/:id', CarController.findById);
-carRouter.post('/', createCarValidationMiddleware, carController.create);
-carRouter.delete('/:id', carController.delete);
-carRouter.put('/:id', carController.update);
-carRouter.patch('/:carId/accessories/:accessoryId', carController.updateAccessory);
+carRouter.post('/', authController.protect, createCarValidationMiddleware, carController.create);
+carRouter.delete('/:id', authController.protect, carController.delete);
+carRouter.put('/:id', authController.protect, carController.update);
+carRouter.patch('/:carId/accessories/:accessoryId', authController.protect, carController.updateAccessory);

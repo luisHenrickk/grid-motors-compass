@@ -13,4 +13,5 @@ export interface IUser extends Document {
   neighborhood: string;
   locality: string;
   uf: string;
+  isCorrectPassword(candidatePassword: string, userPassword: string): Promise<boolean>;
 }

@@ -40,6 +40,8 @@ class UserController {
       const user: UserDTO = req.body;
       const createdUser = await UserService.create(user);
 
+      createdUser.password = '';
+
       res.status(201).json({
         status: 'success',
         data: {
