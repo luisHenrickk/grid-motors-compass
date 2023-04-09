@@ -20,9 +20,12 @@ class UserService {
   }
 
   public async create(userDto: UserDTO): Promise<IUser> {
-    const response = await axios.get(`https://viacep.com.br/ws/${userDto.cep}/json/`);
+    const response = await axios.get(`https://viacep.com.br/ws/${userDto.cep.replace('-', '')}/json/`);
     const data = response.data;
 
+    if (data.erro) {
+      throw new NotFoundError('This Cep is not found');
+    }
     userDto.patio = data.logradouro;
     userDto.neighborhood = data.bairro;
     userDto.complement = data.complemento;
