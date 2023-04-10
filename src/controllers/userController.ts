@@ -1,17 +1,23 @@
 import { Request, Response, NextFunction } from 'express';
 import UserService from '../services/userService';
 import { UserDTO } from '../schemas/user/dto/userDTO';
+import moment from 'moment';
 
 class UserController {
   public async findAll(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
       const users = await UserService.findAll();
 
+      const formattedUsers = users.map((user) => ({
+        ...user.toObject(),
+        birth: moment(user.birth).format('DD/MM/YYYY'),
+      }));
+
       res.status(200).json({
         status: 'success',
-        results: users.length,
+        results: formattedUsers.length,
         data: {
-          data: users,
+          data: formattedUsers,
         },
       });
     } catch (error) {
@@ -24,10 +30,15 @@ class UserController {
       const { id } = req.params;
       const user = await UserService.findById(id);
 
+      const formattedUser = {
+        ...user?.toObject(),
+        birth: moment(user?.birth).format('DD/MM/YYYY'),
+      };
+
       res.status(200).json({
         status: 'success',
         data: {
-          data: user,
+          data: formattedUser,
         },
       });
     } catch (error) {
@@ -42,10 +53,15 @@ class UserController {
 
       createdUser.password = '';
 
+      const formattedUser = {
+        ...createdUser.toObject(),
+        birth: moment(user?.birth).format('DD/MM/YYYY'),
+      };
+
       res.status(201).json({
         status: 'success',
         data: {
-          data: createdUser,
+          data: formattedUser,
         },
       });
     } catch (error) {
@@ -74,7 +90,12 @@ class UserController {
 
       const updatedUser = await UserService.update(id, user);
 
-      res.status(200).json({ updatedUser });
+      const formattedUser = {
+        ...updatedUser?.toObject(),
+        birth: moment(user?.birth).format('DD/MM/YYYY'),
+      };
+
+      res.status(200).json({ formattedUser });
     } catch (error) {
       next(error);
     }

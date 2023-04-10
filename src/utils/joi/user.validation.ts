@@ -17,7 +17,7 @@ export const userValidation = Joi.object({
   birth: Joi.date().max(moment().subtract(18, 'years').toDate()).required().messages({
     'any.required': 'Birth is required',
     'date.max': 'You must be at least 18 years old to register',
-    'date.base': 'The date must be in year/month/day format',
+    'date.base': 'The date must be in year/month/day or year-month-day format',
   }),
   email: Joi.string().required().email().messages({
     'any.required': 'Email is required',
