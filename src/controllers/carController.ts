@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 import CarService from '../services/carService';
 import { CarDTO } from '../schemas/car/dto/carDTO';
 import { UpdateAccessoryDTO } from '../schemas/car/dto/updateAccessoryDTO';
+import { UpdateCarDTO } from '../schemas/car/dto/updateCarDTO';
 
 class CarController {
   public async findAll(req: Request, res: Response, next: NextFunction): Promise<void> {
@@ -69,7 +70,7 @@ class CarController {
   public async update(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
       const { id } = req.params;
-      const car: CarDTO = req.body;
+      const car: UpdateCarDTO = req.body;
 
       const updatedCar = await CarService.update(id, car);
 

@@ -5,6 +5,7 @@ import { ICar } from '../schemas/car/ICar';
 import { ObjectId } from 'mongodb';
 import { BadRequestError, NotFoundError } from '../utils/api-errors';
 import { isObjectIdOrHexString } from 'mongoose';
+import { UpdateCarDTO } from '../schemas/car/dto/updateCarDTO';
 
 class CarService {
   public async findAll(query: any): Promise<ICar[]> {
@@ -50,12 +51,12 @@ class CarService {
     }
   }
 
-  public async update(id: string, carDto: CarDTO): Promise<ICar | null> {
+  public async update(id: string, updateCarDto: UpdateCarDTO): Promise<ICar | null> {
     if (!isObjectIdOrHexString(id)) {
       throw new BadRequestError('Invalid id provided');
     }
 
-    const updatedCar = await carRepository.update(id, carDto);
+    const updatedCar = await carRepository.update(id, updateCarDto);
 
     if (!updatedCar) {
       throw new NotFoundError('Car not found');

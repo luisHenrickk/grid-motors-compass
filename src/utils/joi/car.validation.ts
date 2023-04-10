@@ -1,6 +1,6 @@
 import * as Joi from 'joi';
 
-export const carValidation = Joi.object({
+export const createCarValidation = Joi.object({
   model: Joi.string().required().messages({
     'any.required': 'Model is required',
     'string.base': 'The model must be in string format',
@@ -46,6 +46,27 @@ export const carValidation = Joi.object({
     }),
   number_of_passengers: Joi.number().required().messages({
     'any.required': 'Number of passengers is required',
+    'number.base': 'The Number of passengers must be in number format',
+  }),
+});
+
+export const updateCarValidation = Joi.object({
+  model: Joi.string().messages({
+    'string.base': 'The model must be in string format',
+  }),
+  color: Joi.string().messages({
+    'string.base': 'The color must be in string format',
+  }),
+  year: Joi.string()
+    .regex(/^(19[5-9]\d|20[0-2]\d|2023)$/)
+    .messages({
+      'string.base': 'The year must be a valid year in string format',
+      'string.pattern.base': 'Year must be a valid four-digit year and between 1950 and 2023',
+    }),
+  value_per_day: Joi.number().messages({
+    'number.base': 'The value per day must be in number format',
+  }),
+  number_of_passengers: Joi.number().messages({
     'number.base': 'The Number of passengers must be in number format',
   }),
 });

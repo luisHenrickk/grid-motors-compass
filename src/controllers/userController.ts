@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 import UserService from '../services/userService';
 import { UserDTO } from '../schemas/user/dto/userDTO';
 import moment from 'moment';
+import { UpdateUserDTO } from '../schemas/user/dto/updateUserDTO';
 
 class UserController {
   public async findAll(req: Request, res: Response, next: NextFunction): Promise<void> {
@@ -86,7 +87,7 @@ class UserController {
   public async update(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
       const { id } = req.params;
-      const user: UserDTO = req.body;
+      const user: UpdateUserDTO = req.body;
 
       const updatedUser = await UserService.update(id, user);
 

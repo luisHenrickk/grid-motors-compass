@@ -39,28 +39,18 @@ const UserSchema: Schema = new Schema<IUser>({
   },
   patio: {
     type: String,
-    required: [true, 'patio is required'],
-    default: '',
   },
   complement: {
     type: String,
-    required: [true, 'complement is required'],
-    default: '',
   },
   neighborhood: {
     type: String,
-    required: [true, 'neighborhood is required'],
-    default: '',
   },
   locality: {
     type: String,
-    required: [true, 'locality is required'],
-    default: '',
   },
   uf: {
     type: String,
-    required: [true, 'uf is required'],
-    default: '',
   },
 });
 

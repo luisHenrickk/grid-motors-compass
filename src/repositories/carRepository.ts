@@ -1,6 +1,7 @@
 import { CarDTO } from '../schemas/car/dto/carDTO';
 import { ICar } from '../schemas/car/ICar';
 import Car from '../schemas/car/carSchema';
+import { UpdateCarDTO } from '../schemas/car/dto/updateCarDTO';
 
 class CarRepository {
   public async findAll(queryStr: string, page: number, limit: number): Promise<ICar[]> {
@@ -24,8 +25,8 @@ class CarRepository {
     return await Car.findByIdAndDelete(id);
   }
 
-  public async update(id: string, carDto: CarDTO): Promise<ICar | null> {
-    return await Car.findByIdAndUpdate(id, carDto, {
+  public async update(id: string, updateCarDto: UpdateCarDTO): Promise<ICar | null> {
+    return await Car.findByIdAndUpdate(id, updateCarDto, {
       new: true,
       runValidators: true,
     });

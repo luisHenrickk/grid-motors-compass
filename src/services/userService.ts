@@ -4,6 +4,7 @@ import { UserDTO } from '../schemas/user/dto/userDTO';
 import { IUser } from '../schemas/user/IUser';
 import { BadRequestError, NotFoundError } from '../utils/api-errors';
 import { isObjectIdOrHexString } from 'mongoose';
+import { UpdateUserDTO } from '../schemas/user/dto/updateUserDTO';
 
 class UserService {
   public async findAll(query: any): Promise<IUser[]> {
@@ -60,12 +61,26 @@ class UserService {
     }
   }
 
-  public async update(id: string, userDto: UserDTO): Promise<IUser | null> {
+  public async update(id: string, updateUserDto: UpdateUserDTO): Promise<IUser | null> {
     if (!isObjectIdOrHexString(id)) {
       throw new BadRequestError('Invalid id provided');
     }
 
-    const updatedUser = await userRepository.update(id, userDto);
+    if (updateUserDto.cep) {
+      const response = await axios.get(`https://viacep.com.br/ws/${updateUserDto.cep.replace('-', '')}/json/`);
+      const data = response.data;
+
+      if (data.erro) {
+        throw new NotFoundError('This Cep is not found');
+      }
+
+      updateUserDto.patio = data.logradouro;
+      updateUserDto.neighborhood = data.bairro;
+      updateUserDto.complement = data.complemento;
+      updateUserDto.locality = data.localidade;
+      updateUserDto.uf = data.uf;
+    }
+    const updatedUser = await userRepository.update(id, updateUserDto);
 
     if (!updatedUser) {
       throw new NotFoundError('User not found');

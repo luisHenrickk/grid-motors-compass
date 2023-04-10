@@ -1,3 +1,4 @@
+import { UpdateUserDTO } from '../schemas/user/dto/updateUserDTO';
 import { UserDTO } from '../schemas/user/dto/userDTO';
 import { IUser } from '../schemas/user/IUser';
 import User from '../schemas/user/userSchema';
@@ -24,8 +25,8 @@ class UserRepository {
     return await User.findByIdAndDelete(id);
   }
 
-  public async update(id: string, userDto: UserDTO): Promise<IUser | null> {
-    return await User.findByIdAndUpdate(id, userDto, {
+  public async update(id: string, updateUserDto: UpdateUserDTO): Promise<IUser | null> {
+    return await User.findByIdAndUpdate(id, updateUserDto, {
       new: true,
       runValidators: true,
     });
