@@ -1,0 +1,591 @@
+openapi: 3.0.0
+info:
+  title: 'Grid Motors Compass'
+  version: '1.0.0'
+  description: 'API for managing cars and reservations'
+servers:
+  - url: http://localhost:3000/api/v1
+    description: Local Server
+consumes:
+  - 'application/json'
+produces:
+  - 'application/json'
+securityDefinitions:
+  Bearer:
+    type: apiKey
+    name: Authorization
+    in: header
+paths:
+  /car:
+    get:
+      tags:
+        - Car
+      summary: Retrieve all cars
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: List of cars
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Car'
+    post:
+      tags:
+        - Car
+      summary: Create a new car
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/definitions/CarInput'
+      responses:
+        '201':
+          description: The car
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Car'
+      security:
+        - Bearer: []
+
+  /car/{id}:
+    get:
+      tags:
+        - Car
+      summary: Retrieve a car by ID
+      produces:
+        - application/json
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: ID of the car to retrieve
+      responses:
+        '200':
+          description: The car
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Car'
+        '404':
+          description: Car not found
+    delete:
+      tags:
+        - Car
+      summary: Delete a car by ID
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: ID of the car to delete
+      responses:
+        '204':
+          description: Car deleted
+        '404':
+          description: Car not found
+      security:
+        - Bearer: []
+      requestBody:
+        required: false
+    put:
+      tags:
+        - Car
+      summary: Update a car by ID
+      consumes:
+        - application/json
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: ID of the car to update
+        - in: body
+          name: car
+          schema:
+            $ref: '#/definitions/CarInput'
+      responses:
+        '200':
+          description: The updated car
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Car'
+        '400':
+          description: Invalid input
+        '404':
+          description: Car not found
+      security:
+        - Bearer: []
+  /car/{id}/accessories/{id}:
+    patch:
+      tags:
+        - Car
+      summary: Add or remove a car accessory by ID
+      requestBody:
+        description: The accessory data to update
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Accessory'
+      parameters:
+        - in: path
+          name: carId
+          description: ID of the car to update
+          required: true
+          schema:
+            type: string
+        - in: path
+          name: accessoryId
+          description: ID of the accessory to update
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: The updated car
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Car'
+        '400':
+          description: Invalid input
+      security:
+        - Bearer: []
+
+  /user:
+    get:
+      tags:
+        - User
+      summary: Retrieve all users
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: List of users
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+      security:
+        - Bearer: []
+    post:
+      tags:
+        - User
+      summary: Create a new user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/definitions/UserInput'
+      responses:
+        '201':
+          description: The user
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+
+  /user/{id}:
+    get:
+      tags:
+        - User
+      summary: Retrieve a user by ID
+      produces:
+        - application/json
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: ID of the user to retrieve
+      responses:
+        '200':
+          description: The reserve
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '404':
+          description: User not found
+      security:
+        - Bearer: []
+    delete:
+      tags:
+        - User
+      summary: Delete a user by ID
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: ID of the user to delete
+      responses:
+        '204':
+          description: User deleted
+        '404':
+          description: User not found
+      security:
+        - Bearer: []
+      requestBody:
+        required: false
+    patch:
+      tags:
+        - User
+      summary: Update a user by ID
+      consumes:
+        - application/json
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: ID of the user to update
+        - in: body
+          name: user
+          schema:
+            $ref: '#/definitions/UserUpdate'
+      responses:
+        '200':
+          description: The updated user
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '400':
+          description: Invalid input
+        '404':
+          description: User not found
+      security:
+        - Bearer: []
+
+  /reserve:
+    get:
+      tags:
+        - Reserve
+      summary: Retrieve all reserves
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: List of reserves
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Reserve'
+      security:
+        - Bearer: []
+    post:
+      tags:
+        - Reserve
+      summary: Create a new reserve
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/definitions/ReserveInput'
+      responses:
+        '201':
+          description: The reserve
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Reserve'
+      security:
+        - Bearer: []
+
+  /reserve/{id}:
+    get:
+      tags:
+        - Reserve
+      summary: Retrieve a reserve by ID
+      produces:
+        - application/json
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: ID of the reserve to retrieve
+      responses:
+        '200':
+          description: The reserve
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Reserve'
+        '404':
+          description: Reserve not found
+      security:
+        - Bearer: []
+    delete:
+      tags:
+        - Reserve
+      summary: Delete a reserve by ID
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: ID of the reserve to delete
+      responses:
+        '204':
+          description: Reserve deleted
+        '404':
+          description: Reserve not found
+      security:
+        - Bearer: []
+      requestBody:
+        required: false
+    put:
+      tags:
+        - Reserve
+      summary: Update a reserve by ID
+      consumes:
+        - application/json
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: ID of the reserve to update
+        - in: body
+          name: reserve
+          schema:
+            $ref: '#/definitions/ReserveUpdate'
+      responses:
+        '200':
+          description: The updated reserve
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Reserve'
+        '400':
+          description: Invalid input
+        '404':
+          description: Reserve not found
+      security:
+        - Bearer: []
+
+  /authenticate:
+    post:
+      tags:
+        - Authenticate
+      summary: Login
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/definitions/Login'
+      responses:
+        '200':
+          description: The token
+          content:
+            application/json:
+              schema:
+                $ref: '#/definitions/Token'
+
+components:
+  schemas:
+    Car:
+      type: object
+      properties:
+        id:
+          type: string
+        model:
+          type: string
+        color:
+          type: string
+        year:
+          type: string
+        value_per_day:
+          type: number
+        accessories:
+          type: array
+          items:
+            $ref: '#/components/schemas/Accessory'
+        number_of_passengers:
+          type: integer
+
+    Accessory:
+      type: object
+      properties:
+        description:
+          type: string
+
+    User:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        cpf:
+          type: string
+        birth:
+          type: string
+          format: date
+        email:
+          type: string
+        password:
+          type: string
+        cep:
+          type: string
+        qualified:
+          type: string
+        patio:
+          type: string
+        complement:
+          type: string
+        neighborhood:
+          type: string
+        locality:
+          type: string
+        uf:
+          type: string
+
+    Reserve:
+      type: object
+      properties:
+        id:
+          type: string
+        id_user:
+          type: string
+        start_date:
+          type: string
+          format: date
+        end_date:
+          type: string
+          format: date
+        id_car:
+          type: string
+        final_value:
+          type: number
+
+definitions:
+  Token:
+    type: object
+    properties:
+      token:
+        type: string
+        example: eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkJydW5vIiwiaWF0IjoxNTE2MjM5MDIyfQ.YDN0wJHLzyzmqdwycv4wgh-RMBwQR4C_0uehWmo_77ZrAB46YnPYmzJJ2Lb36GyyDXDwRP9Bt759hcVmUiGWEg
+
+  Login:
+    type: object
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+
+  CarInput:
+    type: object
+    properties:
+      model:
+        type: string
+      color:
+        type: string
+      year:
+        type: string
+      value_per_day:
+        type: number
+      accessories:
+        type: array
+        items:
+          $ref: '#/components/schemas/Accessory'
+      number_of_passengers:
+        type: integer
+
+  UserInput:
+    type: object
+    properties:
+      name:
+        type: string
+      cpf:
+        type: string
+      birth:
+        type: string
+        format: date
+      email:
+        type: string
+      password:
+        type: string
+      cep:
+        type: string
+      qualified:
+        type: string
+
+  UserUpdate:
+    type: object
+    properties:
+      name:
+        type: string
+      cpf:
+        type: string
+      birth:
+        type: string
+        format: date
+      email:
+        type: string
+      cep:
+        type: string
+      qualified:
+        type: string
+      patio:
+        type: string
+      complement:
+        type: string
+      neighborhood:
+        type: string
+      locality:
+        type: string
+      uf:
+        type: string
+
+  ReserveInput:
+    type: object
+    properties:
+      start_date:
+        type: string
+        format: date
+      end_date:
+        type: string
+        format: date
+      id_car:
+        type: string
+
+  ReserveUpdate:
+    type: object
+    properties:
+      start_date:
+        type: string
+        format: date
+      end_date:
+        type: string
+        format: date
+      id_car:
+        type: string
+      final_value:
+        type: number
