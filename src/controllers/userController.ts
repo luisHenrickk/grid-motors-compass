@@ -6,7 +6,7 @@ import moment from 'moment';
 class UserController {
   public async findAll(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
-      const users = await UserService.findAll();
+      const users = await UserService.findAll(req.query);
 
       const formattedUsers = users.map((user) => ({
         ...user.toObject(),

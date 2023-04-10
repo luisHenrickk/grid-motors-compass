@@ -6,6 +6,7 @@ import Reserve from '../schemas/reserve/reserveSchema';
 import moment from 'moment';
 import userRepository from '../repositories/userRepository';
 import carRepository from '../repositories/carRepository';
+import { isObjectIdOrHexString } from 'mongoose';
 
 class ReserveService {
   public async findAll(query: any): Promise<IReserve[]> {
@@ -22,6 +23,10 @@ class ReserveService {
   }
 
   public async findById(id: string): Promise<IReserve | null> {
+    if (!isObjectIdOrHexString(id)) {
+      throw new BadRequestError('Invalid id provided');
+    }
+
     const car = await reserveRepository.findById(id);
 
     if (!car) {
@@ -34,6 +39,10 @@ class ReserveService {
   public async create(reserveDto: ReserveDTO): Promise<IReserve> {
     reserveDto.start_date = new Date(reserveDto.start_date.toString().replaceAll('/', '-'));
     reserveDto.end_date = new Date(reserveDto.end_date.toString().replaceAll('/', '-'));
+
+    if (!isObjectIdOrHexString(reserveDto.id_car)) {
+      throw new BadRequestError('Invalid car id provided');
+    }
 
     if (await this.checkReserve(reserveDto.id_user, reserveDto.start_date, reserveDto.end_date)) {
       throw new BadRequestError('Conflict of dates with another reservation');
@@ -63,6 +72,10 @@ class ReserveService {
   }
 
   public async delete(id: string): Promise<any> {
+    if (!isObjectIdOrHexString(id)) {
+      throw new BadRequestError('Invalid id provided');
+    }
+
     const doc = await reserveRepository.delete(id);
 
     if (!doc) {
@@ -71,6 +84,10 @@ class ReserveService {
   }
 
   public async update(id: string, reserveDto: ReserveDTO): Promise<IReserve | null> {
+    if (!isObjectIdOrHexString(id)) {
+      throw new BadRequestError('Invalid id provided');
+    }
+
     const updatedCar = await reserveRepository.update(id, reserveDto);
 
     if (!updatedCar) {

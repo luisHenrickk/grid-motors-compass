@@ -3,7 +3,8 @@ import carRepository from '../repositories/carRepository';
 import { CarDTO } from '../schemas/car/dto/carDTO';
 import { ICar } from '../schemas/car/ICar';
 import { ObjectId } from 'mongodb';
-import { NotFoundError } from '../utils/api-errors';
+import { BadRequestError, NotFoundError } from '../utils/api-errors';
+import { isObjectIdOrHexString } from 'mongoose';
 
 class CarService {
   public async findAll(query: any): Promise<ICar[]> {
@@ -20,6 +21,10 @@ class CarService {
   }
 
   public async findById(id: string): Promise<ICar | null> {
+    if (!isObjectIdOrHexString(id)) {
+      throw new BadRequestError('Invalid id provided');
+    }
+
     const car = await carRepository.findById(id);
 
     if (!car) {
@@ -34,6 +39,10 @@ class CarService {
   }
 
   public async delete(id: string): Promise<any> {
+    if (!isObjectIdOrHexString(id)) {
+      throw new BadRequestError('Invalid id provided');
+    }
+
     const doc = await carRepository.delete(id);
 
     if (!doc) {
@@ -42,6 +51,10 @@ class CarService {
   }
 
   public async update(id: string, carDto: CarDTO): Promise<ICar | null> {
+    if (!isObjectIdOrHexString(id)) {
+      throw new BadRequestError('Invalid id provided');
+    }
+
     const updatedCar = await carRepository.update(id, carDto);
 
     if (!updatedCar) {
@@ -56,6 +69,10 @@ class CarService {
     accessoryId: string,
     updateAccessoryDto: UpdateAccessoryDTO,
   ): Promise<ICar | null> {
+    if (!isObjectIdOrHexString(carId) || !isObjectIdOrHexString(accessoryId)) {
+      throw new BadRequestError('Invalid id provided');
+    }
+
     const car = await carRepository.findById(carId);
 
     if (!car) {

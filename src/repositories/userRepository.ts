@@ -3,8 +3,13 @@ import { IUser } from '../schemas/user/IUser';
 import User from '../schemas/user/userSchema';
 
 class UserRepository {
-  public async findAll(): Promise<IUser[]> {
-    return await User.find();
+  public async findAll(queryStr: string, page: number, limit: number): Promise<IUser[]> {
+    const startIndex = (page - 1) * limit;
+    let query = User.find(JSON.parse(queryStr));
+    query = query.select('-__v');
+    query = query.skip(startIndex).limit(limit);
+
+    return await query;
   }
 
   public async findById(id: string): Promise<IUser | null> {
