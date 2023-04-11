@@ -213,3 +213,6 @@ Choose POST route on Postman and use route /api/v1/authenticate/ and click on Se
 
 1. Run the application
 2. Open your browser and enter the link: http://localhost:3000/api-docs/
+
+## Deploy: 
+Link: https://api-gridmotorscompass.onrender.com
